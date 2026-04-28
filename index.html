@@ -86,6 +86,7 @@
   .btn-blue   { background:linear-gradient(135deg,#3b82f6,#2563eb); }
   .btn-purple { background:linear-gradient(135deg,#a855f7,#7c3aed); }
   .btn-pink   { background:linear-gradient(135deg,#ec4899,#db2777); }
+  .btn-orange { background:linear-gradient(135deg,#f97316,#ea580c); }
 
   .back-btn {
     background:rgba(255,255,255,.8); border:1.5px solid var(--border); border-radius:99px;
@@ -116,7 +117,6 @@
     font-weight:700; color:var(--text); box-shadow:var(--shadow); display:flex; align-items:center; gap:6px;
   }
   .timer-pill.low { color:var(--red); animation:pulse .5s infinite alternate; }
-  @keyframes pulse { from{opacity:1} to{opacity:.5} }
 
   .streak-row { display:flex; gap:5px; margin-bottom:10px; justify-content:center; flex-wrap:wrap; }
   .dot { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.5); border:2px solid rgba(255,255,255,.7); }
@@ -143,13 +143,18 @@
   .m-card.matched { visibility:hidden; }
 
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px; }
-  .modal { background:white; padding:28px 24px; border-radius:var(--radius-xl); text-align:center; width:100%; max-width:340px; }
+  .modal { background:white; padding:28px 24px; border-radius:var(--radius-xl); text-align:center; width:100%; max-width:340px; animation:pop .3s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes pop { from{transform:scale(.8);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal h3 { font-family:'Baloo 2'; font-size:26px; margin-bottom:10px; color:var(--purple-d); }
+  .modal p { font-size:14px; color:var(--muted); margin-bottom:20px; }
   .modal-btns { display:grid; gap:10px; }
   .btn-primary { background:var(--green); color:white; padding:14px; border-radius:12px; border:none; font-weight:800; cursor:pointer;}
   .btn-secondary { background:var(--bg); color:var(--text); padding:14px; border-radius:12px; border:none; font-weight:800; cursor:pointer;}
   
   .score-item { display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #f1f5f9; }
   .score-item .sval { font-weight:900; color:var(--orange); }
+
+  .btn-bonus { background:linear-gradient(135deg,var(--purple),var(--purple-d)); color:white; width:100%; padding:16px; border-radius:12px; font-weight:800; margin:10px 0; border:none; cursor:pointer; font-size:15px; }
 </style>
 </head>
 <body>
@@ -158,11 +163,11 @@
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <h3 id="modal-title" style="font-family:'Baloo 2'; margin-bottom:10px;">Tebrikler! 🏆</h3>
-    <p id="modal-msg" style="margin-bottom:20px;">Hafıza oyununu bitirdin.</p>
+    <h3 id="modal-title">Harikasın! 🧠</h3>
+    <p id="modal-msg">Tüm eşleri buldun ve zihnini tazeledin!</p>
     <div class="modal-btns">
-      <button class="btn-primary" onclick="closeModal('replay')">Tekrar Oyna</button>
-      <button class="btn-secondary" onclick="closeModal('menu')">Menüye Dön</button>
+      <button class="btn-primary" onclick="closeModal('replay_math')">Tekrar Matematik Oyna</button>
+      <button class="btn-secondary" onclick="closeModal('menu')">Ana Menüye Dön</button>
     </div>
   </div>
 </div>
@@ -224,7 +229,7 @@
     <div class="card q-card" style="text-align:center;">
       <div class="q-disp" id="q-disp">?</div>
       <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
-        <input type="number" id="ans" class="ans-input" placeholder="?" inputmode="numeric">
+        <input type="number" id="ans" class="ans-input" placeholder="?" inputmode="numeric" onkeydown="if(event.key==='Enter')checkAns()">
         <button class="check-btn" onclick="checkAns()">Tamam ✓</button>
       </div>
       <div id="fb" style="margin-top:12px; font-weight:800; font-size:15px; min-height:22px;"></div>
@@ -236,11 +241,13 @@
       <span id="r-emoji" style="font-size:48px;">🎉</span>
       <div style="font-family:'Baloo 2'; font-size:64px; font-weight:800; color:var(--orange); line-height:1;" id="r-score">0</div>
       <p id="r-grade" style="font-weight:800; font-size:16px; margin-bottom:12px; color:var(--muted);">Harikasın!</p>
+      
       <div id="bonus-unlocked" style="display:none;">
-        <button onclick="startMemoryGame()" style="background:linear-gradient(135deg,var(--purple),var(--purple-d)); color:white; width:100%; padding:16px; border-radius:12px; font-weight:800; margin:10px 0; border:none; cursor:pointer;">🧠 Ödül Zeka Oyununu Oyna!</button>
+        <button class="btn-bonus" onclick="startMemoryGame()">🎁 Hediye Zeka Oyununu Oyna!</button>
       </div>
-      <div style="display:grid; gap:8px;">
-        <button class="btn-green" style="padding:14px; border-radius:12px; border:none; color:white; font-weight:800;" onclick="replayGame()">🔄 Tekrar Oyna</button>
+
+      <div style="display:grid; gap:8px; margin-top:10px;">
+        <button class="btn-green" style="padding:14px; border-radius:12px; border:none; color:white; font-weight:800; cursor:pointer;" onclick="replayMath()">🔄 Tekrar Matematik Oyna</button>
         <button class="btn-secondary" onclick="showPage('p-menu')">🏠 Ana Menü</button>
       </div>
     </div>
@@ -267,12 +274,14 @@
 </div>
 
 <script>
+/* TEMEL DEĞİŞKENLER VE AYARLAR */
 let audioCtx=null, soundOn=true;
 let mode='normal', op=1, lastOp=1, diff='easy';
-let score=0, qIdx=0, correct=0, streak=0, maxStreak=0, correctVal=0;
+let score=0, qIdx=0, correct=0, streak=0, correctVal=0;
 let timerInt=null, timeLeft=0;
-let scores = JSON.parse(localStorage.getItem('acamay_scores') || '[]');
+let scores = JSON.parse(localStorage.getItem('acamay_scores_v3') || '[]');
 
+/* SES SİSTEMİ */
 function getCtx(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
 function playTone(freq,type,dur,vol,delay){
   if(!soundOn)return; try{
@@ -282,7 +291,9 @@ function playTone(freq,type,dur,vol,delay){
     g.gain.exponentialRampToValueAtTime(0.001,t+dur); o.start(t);o.stop(t+dur);
   }catch(e){}
 }
+function toggleSound(){ soundOn=!soundOn; document.getElementById('sound-btn').textContent=soundOn?'🔊 Ses Açık':'🔇 Ses Kapalı'; }
 
+/* İSİM YÖNETİMİ */
 function saveName(){
   const nm = document.getElementById('username').value.trim();
   if(!nm){ alert("Lütfen bir isim yaz!"); return; }
@@ -291,15 +302,16 @@ function saveName(){
   badge.classList.add('show');
   setTimeout(()=>badge.classList.remove('show'), 2000);
 }
-
 function loadName(){
   const saved = localStorage.getItem('acamay_user');
   if(saved) document.getElementById('username').value = saved;
 }
 
+/* SAYFA GEÇİŞLERİ */
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
 function goModes(m){
@@ -315,6 +327,7 @@ function setDiff(d){
   document.getElementById('d-'+d).classList.add('active');
 }
 
+/* MATEMATİK OYUN MANTIĞI */
 function start(o){
   op=o; lastOp=o; score=0; qIdx=0; correct=0; streak=0;
   document.getElementById('g-name').textContent = document.getElementById('username').value;
@@ -331,25 +344,31 @@ function buildDots(){
 }
 
 function nextQ(){
-  qIdx++; if(qIdx>10){ finishGame(); return; }
-  let M = diff==='easy'?10:diff==='medium'?25:50;
+  qIdx++; 
+  if(qIdx > 10){ 
+    finishGame(); 
+    return; 
+  }
+  
+  let M = diff==='easy' ? 10 : diff==='medium' ? 25 : 50;
   let a, b, sym;
+  
   if(op===1){ a=rnd(M); b=rnd(M); correctVal=a+b; sym='+'; }
   else if(op===2){ a=rndRange(10,M); b=rnd(a); correctVal=a-b; sym='-'; }
   else if(op===3){ a=rnd(12); b=rnd(10); correctVal=a*b; sym='×'; }
   else { b=rndRange(1,10); a=b*rnd(10); correctVal=a/b; sym='÷'; }
 
-  let disp = mode==='normal' ? `${a} ${sym} ${b} = ?` : `? ${sym} ${b} = ${correctVal + (op===1?0:0)}`;
   if(mode==='missing') {
-      if(op===1) { document.getElementById('q-disp').textContent = `? + ${b} = ${a+b}`; correctVal = a; }
-      else if(op===2) { document.getElementById('q-disp').textContent = `? - ${b} = ${a-b}`; correctVal = a; }
-      else { document.getElementById('q-disp').textContent = `${a} ${sym} ${b} = ?`; }
+    if(op===1) { document.getElementById('q-disp').textContent = `? + ${b} = ${a+b}`; correctVal = a; }
+    else if(op===2) { document.getElementById('q-disp').textContent = `? - ${b} = ${a-b}`; correctVal = a; }
+    else { document.getElementById('q-disp').textContent = `${a} ${sym} ${b} = ?`; }
   } else {
-      document.getElementById('q-disp').textContent = disp;
+    document.getElementById('q-disp').textContent = `${a} ${sym} ${b} = ?`;
   }
 
   document.getElementById('ans').value = '';
   document.getElementById('ans').focus();
+  document.getElementById('fb').textContent = '';
   if(diff==='hard') startTimer();
 }
 
@@ -366,80 +385,114 @@ function checkAns(){
   clearInterval(timerInt);
   const val = parseInt(document.getElementById('ans').value);
   const dot = document.getElementById('dot-'+(qIdx-1));
-  if(val === correctVal){
+  
+  if(!isNaN(val) && val === correctVal){
     correct++; streak++; score += (diff==='easy'?10:diff==='medium'?20:30);
     playTone(600,'sine',0.1,0.2); dot.classList.add('hit');
+    document.getElementById('fb').textContent = 'Harika! ✨';
+    document.getElementById('fb').style.color = 'var(--green-d)';
   } else {
     streak=0; dot.classList.add('miss'); playTone(200,'square',0.2,0.2);
+    document.getElementById('fb').textContent = 'Cevap: ' + correctVal;
+    document.getElementById('fb').style.color = 'var(--red)';
   }
   document.getElementById('g-stars').textContent = score;
-  setTimeout(nextQ, 800);
+  setTimeout(nextQ, 1000);
 }
 
 function finishGame(){
   showPage('p-result');
   document.getElementById('r-score').textContent = score;
-  document.getElementById('bonus-unlocked').style.display = correct >= 9 ? 'block' : 'none';
+  // 10 soru tamamlandığı için (doğru sayısı fark etmeksizin veya istersen correct>=8 yapabilirsin)
+  // Burada orijinal isteğine göre "10 soru tamamlanınca" hediye oyun butonunu açıyoruz.
+  document.getElementById('bonus-unlocked').style.display = 'block'; 
   saveScore();
 }
 
 function saveScore(){
-  scores.push({name: localStorage.getItem('acamay_user'), score: score});
+  scores.push({name: localStorage.getItem('acamay_user'), score: score, date: Date.now()});
   scores.sort((a,b)=>b.score - a.score);
   scores = scores.slice(0,10);
-  localStorage.setItem('acamay_scores', JSON.stringify(scores));
+  localStorage.setItem('acamay_scores_v3', JSON.stringify(scores));
 }
 
 function goScores(){
   showPage('p-scores');
-  document.getElementById('score-list').innerHTML = scores.map((s,i)=>`
+  document.getElementById('score-list').innerHTML = scores.length ? scores.map((s,i)=>`
     <div class="score-item"><span>${i+1}. ${s.name}</span><span class="sval">${s.score} ⭐</span></div>
-  `).join('');
+  `).join('') : '<p style="text-align:center; padding:20px; color:var(--muted);">Henüz skor yok.</p>';
 }
 
 function rnd(n){return Math.floor(Math.random()*(n+1));}
 function rndRange(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-function replayGame(){ showPage('p-modes'); }
-function toggleSound(){ soundOn=!soundOn; document.getElementById('sound-btn').textContent=soundOn?'🔊 Ses Açık':'🔇 Ses Kapalı'; }
+function replayMath(){ start(lastOp); }
 
-window.onload = loadName;
+/* HAFIZA OYUNU (HEDİYE OYUN) */
+let flipped=[], matchedCount=0, memTimer=0, memInt=null;
 
-// Hafıza oyunu için temel mantık (Sizin kodunuzun optimize hali)
-let flipped=[];
 function startMemoryGame(){
   showPage('p-bonus');
+  matchedCount=0; flipped=[]; memTimer=0;
   const items = ['🍎','🍎','🚀','🚀','💎','💎','👻','👻','🐱','🐱','🌈','🌈','🍦','🍦','⚽','⚽'].sort(()=>Math.random()-0.5);
   const board = document.getElementById('memory-board');
   board.innerHTML = '';
+  
   items.forEach(item => {
     const c = document.createElement('div'); c.className='m-card'; c.dataset.v = item; c.textContent = '?';
-    c.onclick = () => {
-      if(flipped.length<2 && !c.classList.contains('flipped')){
-        c.classList.add('flipped'); c.textContent = c.dataset.v; flipped.push(c);
-        if(flipped.length===2){
-          setTimeout(()=>{
-            if(flipped[0].dataset.v === flipped[1].dataset.v){
-              flipped[0].classList.add('matched'); flipped[1].classList.add('matched');
-            } else {
-              flipped[0].classList.remove('flipped'); flipped[1].classList.remove('flipped');
-              flipped[0].textContent = '?'; flipped[1].textContent = '?';
-            }
-            flipped = [];
-            if(document.querySelectorAll('.matched').length === 16) {
-                document.getElementById('modal').style.display='flex';
-            }
-          }, 600);
-        }
-      }
-    };
+    c.onclick = () => flipCard(c);
     board.appendChild(c);
   });
+
+  clearInterval(memInt);
+  memInt = setInterval(()=>{
+    memTimer++;
+    document.getElementById('memory-timer').textContent = 'Süre: ' + memTimer + ' sn';
+  }, 1000);
+}
+
+function flipCard(c){
+  if(flipped.length < 2 && !c.classList.contains('flipped') && !c.classList.contains('matched')){
+    c.classList.add('flipped'); 
+    c.textContent = c.dataset.v; 
+    flipped.push(c);
+    
+    if(flipped.length === 2){
+      setTimeout(checkMatch, 700);
+    }
+  }
+}
+
+function checkMatch(){
+  const [a, b] = flipped;
+  if(a.dataset.v === b.dataset.v){
+    a.classList.add('matched'); 
+    b.classList.add('matched');
+    matchedCount += 2;
+    playTone(800, 'sine', 0.1, 0.2);
+  } else {
+    a.classList.remove('flipped'); 
+    b.classList.remove('flipped');
+    a.textContent = '?'; 
+    b.textContent = '?';
+  }
+  flipped = [];
+  
+  if(matchedCount === 16) {
+    clearInterval(memInt);
+    document.getElementById('modal').style.display = 'flex';
+  }
 }
 
 function closeModal(act){
-  document.getElementById('modal').style.display='none';
-  if(act==='replay') startMemoryGame(); else showPage('p-menu');
+  document.getElementById('modal').style.display = 'none';
+  if(act === 'replay_math') {
+    replayMath(); 
+  } else {
+    showPage('p-menu');
+  }
 }
+
+window.onload = loadName;
 </script>
 </body>
 </html>
