@@ -33,13 +33,25 @@
       radial-gradient(circle at 80% 80%,rgba(168,85,247,.12) 0%,transparent 50%);
   }
   #confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:999; display:none; }
-  .app { width:100%; max-width:420px; position:relative; z-index:1; margin: 0 auto; }
+
+  /* ── RESPONSIVE LAYOUT ── */
+  .app {
+    width:100%; max-width:520px; position:relative; z-index:1; margin:0 auto;
+  }
+  @media(min-width:600px){
+    body { padding:20px; }
+    .app { max-width:600px; }
+  }
+  @media(min-width:900px){
+    .app { max-width:680px; }
+  }
+
   .page { display:none; }
   .page.active { display:block; animation:appear .35s cubic-bezier(.34,1.56,.64,1); }
   @keyframes appear { from{opacity:0;transform:translateY(12px) scale(.98)} to{opacity:1;transform:translateY(0) scale(1)} }
 
   .logo-wrap { text-align:center; padding:10px 0 6px; }
-  .logo-wrap img { width: 100%; max-width:160px; height:auto; }
+  .logo-wrap img { width:100%; max-width:160px; height:auto; }
   .logo-wrap .tagline { font-size:11px; color:var(--muted); margin-top:4px; font-weight:600; }
 
   .daily-banner {
@@ -48,6 +60,7 @@
     border-left:4px solid var(--orange);
   }
   .daily-banner .ico { font-size:20px; }
+  .daily-banner .info { flex:1; }
   .daily-banner .info strong { font-size:12px; display:block; color:var(--text); }
   .daily-banner .info small  { font-size:10px; color:var(--muted); font-weight:600; }
   .daily-progress-track { height:5px; background:#f1f5f9; border-radius:99px; overflow:hidden; margin-top:5px; }
@@ -55,26 +68,47 @@
 
   .card { background:var(--surface); border-radius:var(--radius-xl); padding:18px; margin-bottom:12px; box-shadow:var(--shadow); border:1.5px solid rgba(255,255,255,.8); }
 
-  .text-input {
-    width:100%; padding:12px; font-size:15px; font-weight:600;
-    border:2px solid var(--border); border-radius:var(--radius-sm); background:#f8fafc; outline:none;
+  /* ── İSİM GİRİŞ ALANI ── */
+  .name-row {
+    display:flex; gap:8px; align-items:center; margin-bottom:12px;
   }
+  .text-input {
+    flex:1; padding:13px 14px; font-size:15px; font-weight:700;
+    border:2px solid var(--border); border-radius:var(--radius-sm);
+    background:#f8fafc; outline:none; transition:border-color .2s;
+    font-family:'Nunito', sans-serif;
+  }
+  .text-input:focus { border-color:var(--blue); }
+  .save-name-btn {
+    padding:13px 16px; background:var(--blue); color:white; border:none;
+    border-radius:var(--radius-sm); font-weight:800; font-size:13px;
+    cursor:pointer; white-space:nowrap; font-family:'Nunito', sans-serif;
+    transition:background .2s;
+  }
+  .save-name-btn:active { background:var(--blue-d); }
+  .saved-badge {
+    display:none; font-size:10px; font-weight:700; color:var(--green-d);
+    background:var(--green-l); padding:3px 8px; border-radius:99px; margin-top:4px;
+  }
+  .saved-badge.show { display:inline-block; }
 
   .sound-toggle {
     position:absolute; top:12px; right:4px; z-index: 10;
-    background:white; border:1.5px solid var(--border); border-radius:99px; padding:5px 10px;
+    background:white; border:1.5px solid var(--border); border-radius:99px; padding:6px 12px;
     font-size:11px; font-weight:700; color:var(--muted); box-shadow:var(--shadow);
+    cursor:pointer;
   }
 
   .menu-btn {
-    width:100%; padding:12px; margin-bottom:8px; border:none; border-radius:var(--radius);
-    color:white; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:12px;
+    width:100%; padding:14px; margin-bottom:8px; border:none; border-radius:var(--radius);
+    color:white; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:12px;
     box-shadow:0 4px 12px rgba(0,0,0,.1); transition:transform .1s; position:relative;
+    font-family:'Nunito', sans-serif;
   }
   .menu-btn:active { transform:scale(.97); }
-  .menu-btn .ico { width:36px; height:36px; background:rgba(255,255,255,.2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .menu-btn .ico { width:40px; height:40px; background:rgba(255,255,255,.2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
   .menu-btn .label { flex:1; text-align:left; line-height:1.2; }
-  .menu-btn .label small { display:block; font-size:10px; opacity:.8; }
+  .menu-btn .label small { display:block; font-size:11px; opacity:.8; }
 
   .btn-green  { background:linear-gradient(135deg,#22c55e,#16a34a); }
   .btn-blue   { background:linear-gradient(135deg,#3b82f6,#2563eb); }
@@ -84,61 +118,101 @@
 
   .back-btn {
     background:rgba(255,255,255,.8); border:1.5px solid var(--border); border-radius:99px;
-    padding:6px 14px; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:10px;
+    padding:8px 16px; font-size:13px; font-weight:700; color:var(--muted); margin-bottom:10px;
+    cursor:pointer; font-family:'Nunito', sans-serif;
   }
 
   .diff-row { display:flex; gap:6px; margin-bottom:12px; }
   .diff-btn {
-    flex:1; padding:8px 4px; border:2px solid var(--border); border-radius:var(--radius-sm);
-    background:white; font-size:11px; font-weight:800; cursor:pointer;
+    flex:1; padding:10px 4px; border:2px solid var(--border); border-radius:var(--radius-sm);
+    background:white; font-size:12px; font-weight:800; cursor:pointer;
+    font-family:'Nunito', sans-serif; transition:.15s;
   }
   .diff-btn.active { color:white; border-color:transparent; }
   .diff-btn.easy.active   { background:var(--green); }
   .diff-btn.medium.active { background:var(--orange); }
   .diff-btn.hard.active   { background:var(--red); }
 
+  /* ── İŞLEM GRID — tablet'te 2 kolon yan yana büyür ── */
   .op-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(min-width:500px){ .op-grid { gap:14px; } }
   .op-btn {
-    padding:16px 8px; border:none; border-radius:var(--radius); color:white;
-    font-size:28px; font-weight:900; font-family:'Baloo 2'; cursor:pointer;
+    padding:18px 8px; border:none; border-radius:var(--radius); color:white;
+    font-size:30px; font-weight:900; font-family:'Baloo 2'; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:2px;
+    transition:transform .1s;
   }
-  .op-btn span { font-size:11px; font-family:'Nunito'; opacity:.9; }
+  .op-btn:active { transform:scale(.95); }
+  .op-btn span { font-size:12px; font-family:'Nunito'; opacity:.9; }
 
   .game-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
   .player-pill, .stars-pill, .timer-pill {
-    background:white; border-radius:99px; padding:5px 12px; font-size:12px;
+    background:white; border-radius:99px; padding:6px 14px; font-size:13px;
     font-weight:700; color:var(--text); box-shadow:var(--shadow); display:flex; align-items:center; gap:6px;
   }
   .timer-pill.low { color:var(--red); animation:pulse .5s infinite alternate; }
+  @keyframes pulse { from{opacity:1} to{opacity:.5} }
 
-  .streak-row { display:flex; gap:4px; margin-bottom:10px; justify-content:center; }
-  .dot { width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,.5); border:2px solid rgba(255,255,255,.7); }
+  .streak-row { display:flex; gap:5px; margin-bottom:10px; justify-content:center; flex-wrap:wrap; }
+  .dot { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.5); border:2px solid rgba(255,255,255,.7); }
   .dot.hit  { background:var(--green); border-color:var(--green-d); transform:scale(1.1); }
   .dot.miss { background:var(--pink);  border-color:var(--pink-d); }
 
-  .q-disp { font-family:'Baloo 2'; font-size:38px; font-weight:800; color:var(--text); margin-bottom:15px; }
-  .ans-input { width:70px; padding:10px; font-size:22px; font-family:'Baloo 2'; text-align:center; border:2px solid var(--border); border-radius:var(--radius-sm); outline:none; }
-  .check-btn { padding:10px 16px; background:var(--blue); color:white; border:none; border-radius:var(--radius-sm); font-weight:800; }
+  /* ── SORU KARTI — tablet'te büyür ── */
+  .q-disp {
+    font-family:'Baloo 2'; font-size:40px; font-weight:800; color:var(--text); margin-bottom:15px;
+  }
+  @media(min-width:500px){ .q-disp { font-size:52px; } }
 
-  .result-score { font-family:'Baloo 2'; font-size:60px; font-weight:800; color:var(--orange); line-height:1; }
-  .btn-bonus { background:linear-gradient(135deg,var(--purple),var(--purple-d)); color:white; width:100%; padding:14px; border-radius:var(--radius-sm); font-weight:800; margin:10px 0; border:none; }
+  .ans-input {
+    width:80px; padding:12px; font-size:24px; font-family:'Baloo 2'; text-align:center;
+    border:2px solid var(--border); border-radius:var(--radius-sm); outline:none;
+  }
+  @media(min-width:500px){
+    .ans-input { width:100px; font-size:28px; }
+  }
+  .check-btn {
+    padding:12px 20px; background:var(--blue); color:white; border:none;
+    border-radius:var(--radius-sm); font-weight:800; font-size:15px;
+    cursor:pointer; font-family:'Nunito', sans-serif;
+  }
 
-  /* 🧠 HAFIZA OYUNU & MODAL */
-  .memory-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; }
-  .m-card { height:70px; background:var(--blue); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:24px; color:white; font-weight:800; transition: .3s; }
+  .result-score { font-family:'Baloo 2'; font-size:64px; font-weight:800; color:var(--orange); line-height:1; }
+  .btn-bonus { background:linear-gradient(135deg,var(--purple),var(--purple-d)); color:white; width:100%; padding:16px; border-radius:var(--radius-sm); font-weight:800; margin:10px 0; border:none; cursor:pointer; font-family:'Nunito', sans-serif; font-size:15px; }
+
+  /* ── HAFIZA OYUNU ── */
+  .memory-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+  @media(min-width:500px){ .memory-grid { gap:12px; } }
+  .m-card {
+    height:70px; background:var(--blue); border-radius:var(--radius-sm);
+    display:flex; align-items:center; justify-content:center; font-size:24px;
+    color:white; font-weight:800; transition:.3s; cursor:pointer;
+  }
+  @media(min-width:500px){ .m-card { height:90px; font-size:30px; } }
   .m-card.flipped { background:white; color:var(--blue-d); border:2px solid var(--blue); }
   .m-card.matched { visibility:hidden; }
 
+  /* ── MODAL ── */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px; }
-  .modal { background:white; padding:24px; border-radius:var(--radius-xl); text-align:center; width:100%; max-width:320px; animation:pop .3s cubic-bezier(.34,1.56,.64,1); }
+  .modal { background:white; padding:28px 24px; border-radius:var(--radius-xl); text-align:center; width:100%; max-width:340px; animation:pop .3s cubic-bezier(.34,1.56,.64,1); }
   @keyframes pop { from{transform:scale(.8);opacity:0} to{transform:scale(1);opacity:1} }
-  .modal h3 { font-family:'Baloo 2'; font-size:24px; margin-bottom:10px; color:var(--purple-d); }
+  .modal h3 { font-family:'Baloo 2'; font-size:26px; margin-bottom:10px; color:var(--purple-d); }
   .modal p { font-size:14px; color:var(--muted); margin-bottom:20px; }
   .modal-btns { display:grid; gap:10px; }
-  .modal-btns button { padding:12px; border-radius:var(--radius-sm); border:none; font-weight:800; font-family:'Nunito'; cursor:pointer; }
+  .modal-btns button { padding:14px; border-radius:var(--radius-sm); border:none; font-weight:800; font-family:'Nunito'; cursor:pointer; font-size:14px; }
   .btn-primary { background:var(--green); color:white; }
   .btn-secondary { background:var(--bg); color:var(--text); }
+
+  /* ── SKOR LİSTESİ ── */
+  .score-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 10px; border-bottom:1px solid #f1f5f9;
+    font-size:14px;
+  }
+  .score-item:last-child { border-bottom:none; }
+  .score-item .rank { font-weight:900; color:var(--muted); width:28px; }
+  .score-item .sname { flex:1; font-weight:700; }
+  .score-item .sval { font-weight:900; color:var(--orange); }
 </style>
 </head>
 <body>
@@ -157,6 +231,8 @@
 </div>
 
 <div class="app">
+
+  <!-- ── ANA MENÜ ── -->
   <div id="p-menu" class="page active">
     <button class="sound-toggle" id="sound-btn" onclick="toggleSound()">🔊 Ses Açık</button>
     <div class="logo-wrap">
@@ -171,8 +247,14 @@
       </div>
     </div>
     <div class="card">
-      <input type="text" id="username" class="text-input" placeholder="İsmini yaz ...!" maxlength="20">
-      <div style="height:12px;"></div>
+      <!-- İSİM KAYDETME ALANI -->
+      <div class="name-row">
+        <input type="text" id="username" class="text-input" placeholder="İsmini yaz …" maxlength="20"
+          oninput="onNameInput()" onkeydown="if(event.key==='Enter')saveName()">
+        <button class="save-name-btn" id="save-btn" onclick="saveName()">💾 Kaydet</button>
+      </div>
+      <span class="saved-badge" id="saved-badge">✓ İsim kaydedildi</span>
+      <div style="height:10px;"></div>
       <button class="menu-btn btn-green" onclick="goModes('normal')">
         <div class="ico">🎮</div><div class="label">Klasik mod<small>Soruyu çöz, puan kazan</small></div>
       </button>
@@ -185,11 +267,12 @@
     </div>
   </div>
 
+  <!-- ── MOD & ZORLUK ── -->
   <div id="p-modes" class="page">
     <button class="back-btn" onclick="showPage('p-menu')">← Geri</button>
-    <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px;">
-      <span id="mode-ico" style="font-size:24px;">🎮</span>
-      <div style="font-weight:800;font-size:14px;" id="mode-title">Klasik mod</div>
+    <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px 16px;">
+      <span id="mode-ico" style="font-size:26px;">🎮</span>
+      <div style="font-weight:800;font-size:15px;" id="mode-title">Klasik mod</div>
     </div>
     <div class="diff-row">
       <button class="diff-btn easy active" id="d-easy" onclick="setDiff('easy')">😊 Kolay</button>
@@ -204,9 +287,10 @@
     </div>
   </div>
 
+  <!-- ── OYUN ── -->
   <div id="p-game" class="page">
     <div class="game-topbar">
-      <div class="player-pill"><span id="g-name">Oyuncu</span></div>
+      <div class="player-pill">👤 <span id="g-name">Oyuncu</span></div>
       <div class="right-pills" style="display:flex; gap:4px;">
         <div class="timer-pill" id="timer-pill" style="display:none">⏱ <span id="timer-val">15</span></div>
         <div class="stars-pill">⭐ <span id="g-stars">0</span></div>
@@ -215,55 +299,61 @@
     <div class="streak-row" id="dot-row"></div>
     <div class="card q-card" style="text-align:center;">
       <div class="q-disp" id="q-disp">?</div>
-      <div style="display:flex; gap:8px; justify-content:center;">
-        <input type="number" id="ans" class="ans-input" placeholder="?" inputmode="numeric">
-        <button class="check-btn" onclick="checkAns()">Tamam</button>
+      <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
+        <input type="number" id="ans" class="ans-input" placeholder="?" inputmode="numeric"
+          onkeydown="if(event.key==='Enter')checkAns()">
+        <button class="check-btn" onclick="checkAns()">Tamam ✓</button>
       </div>
-      <div id="fb" class="fb" style="margin-top:10px; font-weight:800; min-height:20px;"></div>
+      <div id="fb" style="margin-top:12px; font-weight:800; font-size:15px; min-height:22px;"></div>
     </div>
   </div>
 
+  <!-- ── SONUÇ ── -->
   <div id="p-result" class="page">
     <div class="card result-card" style="text-align:center;">
-      <span class="result-emoji" id="r-emoji" style="font-size:40px;">🎉</span>
+      <span id="r-emoji" style="font-size:48px;">🎉</span>
       <div class="result-score" id="r-score">0</div>
-      <p id="r-grade" style="font-weight:800; margin-bottom:10px;">Harikasın!</p>
+      <p id="r-grade" style="font-weight:800; font-size:16px; margin-bottom:12px; color:var(--muted);">Harikasın!</p>
       <div id="bonus-unlocked" style="display:none;">
         <button class="btn-bonus" onclick="startMemoryGame()">🧠 Ödül Zeka Oyununu Oyna!</button>
       </div>
-      <div style="display:flex; justify-content:space-around; margin-top:10px;">
-        <div><div id="r-ok" style="color:var(--green); font-weight:900;">0</div><small>Doğru</small></div>
-        <div><div id="r-str" style="color:var(--orange); font-weight:900;">0</div><small>Seri</small></div>
+      <div style="display:flex; justify-content:space-around; margin-top:12px; margin-bottom:16px;">
+        <div><div id="r-ok" style="font-family:'Baloo 2'; font-size:28px; color:var(--green); font-weight:900;">0</div><small style="color:var(--muted); font-weight:700;">Doğru</small></div>
+        <div><div id="r-str" style="font-family:'Baloo 2'; font-size:28px; color:var(--orange); font-weight:900;">0</div><small style="color:var(--muted); font-weight:700;">En Uzun Seri</small></div>
       </div>
-      <div style="display:grid; gap:8px; margin-top:15px;">
-        <button class="btn-green" style="padding:12px; border-radius:12px; border:none; color:white; font-weight:800;" onclick="replayGame()">Tekrar oyna</button>
-        <button class="btn-secondary" style="padding:10px; border-radius:12px; border:none; font-weight:700;" onclick="showPage('p-menu')">Ana Menü</button>
+      <div style="display:grid; gap:8px;">
+        <button class="btn-green" style="padding:14px; border-radius:12px; border:none; color:white; font-weight:800; font-size:15px; cursor:pointer; font-family:'Nunito';" onclick="replayGame()">🔄 Tekrar Oyna</button>
+        <button class="btn-secondary" style="padding:12px; border-radius:12px; border:none; font-weight:700; font-size:14px; cursor:pointer; font-family:'Nunito'; background:var(--bg); color:var(--text);" onclick="showPage('p-menu')">🏠 Ana Menü</button>
       </div>
     </div>
   </div>
 
+  <!-- ── BONUS HAFIZA OYUNU ── -->
   <div id="p-bonus" class="page">
+    <button class="back-btn" onclick="showPage('p-menu')">← Ana Menü</button>
     <div class="card">
-      <div style="text-align:center; margin-bottom:10px;">
-        <h3 style="font-family:'Baloo 2';">Zeka Egzersizi</h3>
-        <small id="memory-timer">Süre: 00</small>
+      <div style="text-align:center; margin-bottom:12px;">
+        <h3 style="font-family:'Baloo 2'; font-size:20px;">🧠 Zeka Egzersizi</h3>
+        <small id="memory-timer" style="color:var(--muted); font-weight:700;">Süre: 0</small>
       </div>
       <div id="memory-board" class="memory-grid"></div>
     </div>
   </div>
 
+  <!-- ── SKOR TABLOSU ── -->
   <div id="p-scores" class="page">
     <button class="back-btn" onclick="showPage('p-menu')">← Geri</button>
     <div class="card">
-      <div style="font-weight:800; margin-bottom:10px;">🏆 En İyi 10 Skor</div>
+      <div style="font-weight:800; margin-bottom:12px; font-size:16px;">🏆 En İyi 10 Skor</div>
       <div id="score-list"></div>
     </div>
   </div>
-</div>
+
+</div><!-- /app -->
 
 <script>
-/* ── TEMEL MANTIK & SES ── */
-let audioCtx=null, soundOn=true, bgStarted=false;
+/* ── SES ── */
+let audioCtx=null, soundOn=true;
 function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
 function playTone(freq,type,dur,vol,delay){
   if(!soundOn)return; try{
@@ -279,6 +369,34 @@ function toggleSound(){
   soundOn=!soundOn; document.getElementById('sound-btn').textContent=soundOn?'🔊 Ses Açık':'🔇 Ses Kapalı';
 }
 
+/* ── İSİM KAYDET / YÜKLE ── */
+function loadSavedName(){
+  const saved = localStorage.getItem('acamayName');
+  if(saved){
+    document.getElementById('username').value = saved;
+    showSavedBadge();
+  }
+}
+function saveName(){
+  const nm = document.getElementById('username').value.trim();
+  if(!nm){ alert("Lütfen bir isim yaz!"); return; }
+  localStorage.setItem('acamayName', nm);
+  showSavedBadge();
+}
+function onNameInput(){
+  // Kullanıcı ismini değiştirince badge'i gizle
+  const badge = document.getElementById('saved-badge');
+  const saved = localStorage.getItem('acamayName');
+  if(document.getElementById('username').value !== saved){
+    badge.classList.remove('show');
+  }
+}
+function showSavedBadge(){
+  const badge = document.getElementById('saved-badge');
+  badge.classList.add('show');
+  setTimeout(()=>badge.classList.remove('show'), 2500);
+}
+
 /* ── OYUN DEĞİŞKENLERİ ── */
 let mode='normal', op=1, lastOp=1, diff='easy';
 let score=0, qIdx=0, correct=0, streak=0, maxStreak=0, correctVal=0;
@@ -292,8 +410,11 @@ function showPage(id){
 }
 
 function goModes(m){
-  if(!document.getElementById('username').value.trim()){ alert("Lütfen ismini yaz !"); return; }
-  mode=m; document.getElementById('mode-title').textContent=m==='missing'?'Eksik Sayı':'Klasik Mod';
+  const nm = document.getElementById('username').value.trim();
+  if(!nm){ alert("Lütfen önce ismini yaz ve kaydet! 👆"); return; }
+  mode=m;
+  document.getElementById('mode-title').textContent=m==='missing'?'Eksik Sayı':'Klasik Mod';
+  document.getElementById('mode-ico').textContent=m==='missing'?'🔍':'🎮';
   showPage('p-modes');
 }
 
@@ -304,14 +425,16 @@ function setDiff(d){
 
 function start(o){
   op=o; lastOp=o; score=0; qIdx=0; correct=0; streak=0; maxStreak=0;
-  document.getElementById('g-name').textContent = document.getElementById('username').value;
+  const nm = document.getElementById('username').value.trim() || 'Oyuncu';
+  document.getElementById('g-name').textContent = nm;
+  document.getElementById('g-stars').textContent = '0';
   document.getElementById('timer-pill').style.display=diff==='hard'?'flex':'none';
   buildDots(); nextQ(); showPage('p-game');
 }
 
 function buildDots(){
   const row=document.getElementById('dot-row'); row.innerHTML='';
-  for(let i=0;i<10;i++){ const d=document.createElement('div'); d.className='dot'; d.id='dot-'+i; row.appendChild(d); }
+  for(let i=0;i<10;i++){const d=document.createElement('div');d.className='dot';d.id='dot-'+i;row.appendChild(d);}
 }
 
 function nextQ(){
@@ -323,9 +446,11 @@ function nextQ(){
   else if(op===3){a=rnd(10); b=rnd(10); correctVal=a*b; sym='×';}
   else {b=rndRange(1,10); a=b*rnd(10); correctVal=a/b; sym='÷';}
 
-  let dispText = mode==='normal' ? `${a} ${sym} ${b} = ?` : `? ${sym} ${b} = ${op===1?a+b:op===2?a-b:a*b}`;
+  let dispText = mode==='normal'
+    ? `${a} ${sym} ${b} = ?`
+    : `? ${sym} ${b} = ${op===1?a+b:op===2?a-b:op===3?a*b:a}`;
   if(mode==='missing' && op===1) correctVal = a;
-  
+
   document.getElementById('q-disp').textContent = dispText;
   document.getElementById('ans').value = '';
   document.getElementById('fb').textContent = '';
@@ -334,10 +459,13 @@ function nextQ(){
 }
 
 function startTimer(){
-  clearInterval(timerInt); timeLeft=15; 
+  clearInterval(timerInt); timeLeft=15;
+  const pill = document.getElementById('timer-pill');
+  pill.classList.remove('low');
   document.getElementById('timer-val').textContent=timeLeft;
   timerInt=setInterval(()=>{
     timeLeft--; document.getElementById('timer-val').textContent=timeLeft;
+    if(timeLeft<=5) pill.classList.add('low');
     if(timeLeft<=0){ clearInterval(timerInt); checkAns(true); }
   },1000);
 }
@@ -346,12 +474,16 @@ function checkAns(isTimeUp=false){
   clearInterval(timerInt);
   const val = parseInt(document.getElementById('ans').value);
   const dot = document.getElementById('dot-'+(qIdx-1));
-  if(!isTimeUp && val === correctVal){
-    correct++; streak++; score+=10 + (streak>2?5:0); soundCorrect();
-    dot.classList.add('hit'); document.getElementById('fb').textContent="Harika! ✨";
+  if(!isTimeUp && val===correctVal){
+    correct++; streak++; if(streak>maxStreak) maxStreak=streak;
+    score+=10+(streak>2?5:0); soundCorrect();
+    dot.classList.add('hit');
+    document.getElementById('fb').style.color='var(--green-d)';
+    document.getElementById('fb').textContent='Harika! ✨';
   } else {
     streak=0; dot.classList.add('miss'); soundWrong();
-    document.getElementById('fb').textContent="Hata! Cevap: "+correctVal;
+    document.getElementById('fb').style.color='var(--red)';
+    document.getElementById('fb').textContent='Hata! Cevap: '+correctVal;
   }
   document.getElementById('g-stars').textContent=score;
   setTimeout(nextQ, 1200);
@@ -362,13 +494,18 @@ function finishGame(){
   document.getElementById('r-score').textContent = score;
   document.getElementById('r-ok').textContent = correct;
   document.getElementById('r-str').textContent = maxStreak;
+  // Sonuç emoji ve mesaj
+  const emoji = correct===10?'🏆':correct>=8?'🎉':correct>=5?'😊':'💪';
+  const grade = correct===10?'Mükemmel! Tam puan!':correct>=8?'Harikasın!':correct>=5?'İyi iş!':'Daha çok pratik yap!';
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-grade').textContent = grade;
   document.getElementById('bonus-unlocked').style.display = correct===10 ? 'block' : 'none';
   if(correct>=8) launchConfetti(100);
   saveScore();
 }
 
 function saveScore(){
-  const nm = document.getElementById('username').value;
+  const nm = document.getElementById('username').value.trim() || 'Oyuncu';
   scores.push({name:nm, score:score, date:Date.now()});
   scores.sort((a,b)=>b.score-a.score); scores=scores.slice(0,10);
   localStorage.setItem('acamayV2', JSON.stringify(scores));
@@ -377,62 +514,77 @@ function saveScore(){
 function goScores(){
   showPage('p-scores');
   const list = document.getElementById('score-list');
-  list.innerHTML = scores.map((s,i)=>`<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;"><span>${i+1}. ${s.name}</span><strong>${s.score}</strong></div>`).join('');
+  if(scores.length===0){
+    list.innerHTML='<p style="text-align:center;color:var(--muted);padding:20px;font-weight:700;">Henüz skor yok. Oynamaya başla! 🎮</p>';
+    return;
+  }
+  const medals=['🥇','🥈','🥉'];
+  list.innerHTML = scores.map((s,i)=>`
+    <div class="score-item">
+      <span class="rank">${medals[i]||i+1+'.'}</span>
+      <span class="sname">${s.name}</span>
+      <span class="sval">${s.score} ⭐</span>
+    </div>`).join('');
 }
 
-/* ── 🧠 HAFIZA OYUNU & MODAL KONTROL ── */
-let memoryCards=[], flippedCards=[], matchedCount=0, memoryTimer=0, memInt=null;
+/* ── HAFIZA OYUNU ── */
+let flippedCards=[], matchedCount=0, memoryTimer=0, memInt=null;
 
 function startMemoryGame(){
   showPage('p-bonus'); matchedCount=0; memoryTimer=0; flippedCards=[];
   const symbols=['🍎','🚀','💎','👻','⚽','🌈','🍦','🐱'];
-  const deck = [...symbols, ...symbols].sort(()=>Math.random()-0.5);
+  const deck=[...symbols,...symbols].sort(()=>Math.random()-0.5);
   const board=document.getElementById('memory-board'); board.innerHTML='';
   deck.forEach(s=>{
     const c=document.createElement('div'); c.className='m-card'; c.dataset.s=s; c.textContent='?';
     c.onclick=()=>flipCard(c); board.appendChild(c);
   });
-  memInt = setInterval(()=>{ memoryTimer++; document.getElementById('memory-timer').textContent="Süre: "+memoryTimer; },1000);
+  clearInterval(memInt);
+  memInt=setInterval(()=>{memoryTimer++;document.getElementById('memory-timer').textContent='Süre: '+memoryTimer+' sn';},1000);
 }
 
 function flipCard(c){
-  if(flippedCards.length===2 || c.classList.contains('flipped') || c.classList.contains('matched')) return;
+  if(flippedCards.length===2||c.classList.contains('flipped')||c.classList.contains('matched')) return;
   c.classList.add('flipped'); c.textContent=c.dataset.s; flippedCards.push(c);
-  if(flippedCards.length===2) setTimeout(checkMatch, 600);
+  if(flippedCards.length===2) setTimeout(checkMatch,600);
 }
 
 function checkMatch(){
-  const [a,b] = flippedCards;
-  if(a.dataset.s === b.dataset.s){ a.classList.add('matched'); b.classList.add('matched'); matchedCount+=2; soundCorrect(); }
-  else { a.classList.remove('flipped'); b.classList.remove('flipped'); a.textContent='?'; b.textContent='?'; }
+  const [a,b]=flippedCards;
+  if(a.dataset.s===b.dataset.s){
+    a.classList.add('matched'); b.classList.add('matched'); matchedCount+=2; soundCorrect();
+  } else {
+    a.classList.remove('flipped'); b.classList.remove('flipped'); a.textContent='?'; b.textContent='?';
+  }
   flippedCards=[];
-  if(matchedCount===16){ 
-    clearInterval(memInt); 
-    openModal("Tebrikler! 🧠", `${memoryTimer} saniyede hafıza oyununu bitirdin. Ne yapmak istersin?`);
+  if(matchedCount===16){
+    clearInterval(memInt);
+    openModal('Tebrikler! 🧠',`${memoryTimer} saniyede hafıza oyununu bitirdin! 🎉`);
   }
 }
 
-function openModal(title, msg){
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-msg').textContent = msg;
-  document.getElementById('modal').style.display = 'flex';
+function openModal(title,msg){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-msg').textContent=msg;
+  document.getElementById('modal').style.display='flex';
 }
-
 function closeModal(action){
-  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal').style.display='none';
   if(action==='replay') start(lastOp);
   else showPage('p-menu');
 }
 
-/* ── YARDIMCI FONKSİYONLAR ── */
-function rnd(n){ return Math.floor(Math.random()*(n+1)); }
-function rndRange(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+/* ── YARDIMCI ── */
+function rnd(n){return Math.floor(Math.random()*(n+1));}
+function rndRange(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function replayGame(){start(lastOp);}
 function launchConfetti(n){
   const cvs=document.getElementById('confetti-canvas'); cvs.style.display='block';
-  setTimeout(()=>cvs.style.display='none', 3000);
+  setTimeout(()=>cvs.style.display='none',3000);
 }
-function replayGame(){ start(lastOp); }
 
+/* ── BAŞLANGIČ: kaydedilmiş ismi yükle ── */
+window.addEventListener('DOMContentLoaded', loadSavedName);
 </script>
 </body>
 </html>
