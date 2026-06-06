@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.acamay.matematik",
+        "sha256_cert_fingerprints": ["83:BE:3F:A3:48:83:40:29:CA:EF:BF:42:7D:2F:CC:F1:B6:42:E5:3A:3E:2D:D9:C6:0E:EE:67:33:80:FC:BE:85"]
+      }
+    }]
