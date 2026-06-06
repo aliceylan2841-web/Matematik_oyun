@@ -1,18 +1,13 @@
-const CACHE = 'acamay-v1';
-const ASSETS = [
-  '.',
-  'index.html',
-  'logo.png',
-  'manifest.json',
-  'icons/icon-192.png',
-  'icons/icon-512.png'
-];
+const CACHE = 'acamay-v3';
+const ASSETS = ['./index.html', './manifest.json', './sw.js'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS))
-  );
   self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE).then(c => {
+      return Promise.allSettled(ASSETS.map(a => c.add(a)));
+    })
+  );
 });
 
 self.addEventListener('activate', e => {
@@ -25,7 +20,17 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+      return fetch(e.request).then(res => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return res;
+      }).catch(() => cached);
+    })
   );
 });
