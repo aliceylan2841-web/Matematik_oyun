@@ -376,6 +376,9 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
 
 /* UTIL */
 .sec-btn{background:linear-gradient(135deg,#00B894,#00996A);color:white;padding:13px;border-radius:12px;border:none;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;display:inline-block;}
+
+/* ===== V7 PROGRESS / PROFILE ===== */
+.hero-progress{margin:0 0 12px;padding:14px;background:linear-gradient(135deg,rgba(108,92,231,.25),rgba(78,205,196,.12));border:1px solid rgba(162,155,254,.25);cursor:pointer}.hp-top{display:flex;justify-content:space-between;align-items:center;font-size:13px}.hp-top b{display:block}.hp-top span{display:block;font-size:10px;color:var(--muted);margin-top:2px}.hp-xp{font-weight:900;color:var(--c9)}.xp-track{height:8px;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden;margin:10px 0 7px}.xp-track.big{height:11px}.xp-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--c7),var(--c3));transition:width .5s ease}.hp-bottom,.xp-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}.hp-bottom span:last-child{color:var(--c7);font-weight:800}.profile-hero{display:flex;align-items:center;gap:11px;padding:14px}.avatar{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,rgba(162,155,254,.28),rgba(78,205,196,.18));border:1px solid var(--border)}.prof-main{min-width:0;flex:1}.prof-name{font-size:17px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.prof-level{font-size:10px;color:var(--muted);margin-top:3px}.prof-xp{text-align:right;color:var(--c9);font-size:18px}.prof-xp small{display:block;font-size:9px;color:var(--muted)}.section-title{font-weight:900;font-size:13px;margin-bottom:10px}.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:10px 4px;text-align:center}.stat-card b{display:block;font-size:18px;color:var(--c7)}.stat-card span{font-size:9px;color:var(--muted)}.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.badge{padding:9px 3px;text-align:center;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);opacity:.38}.badge.on{opacity:1;background:rgba(253,203,110,.08);border-color:rgba(253,203,110,.25)}.badge .be{font-size:20px;display:block}.badge .bn{font-size:8px;color:var(--muted);margin-top:4px}.wide-action{width:100%;border:0;border-radius:13px;padding:13px 14px;margin-top:8px;background:linear-gradient(135deg,var(--c7),#6c5ce7);color:white;font:800 12px Nunito;display:flex;justify-content:space-between;align-items:center}.wide-action.secondary{background:var(--surface2);color:var(--muted)}.wide-action span{background:rgba(0,0,0,.2);padding:3px 7px;border-radius:20px}.review-sub{font-size:10px;color:var(--muted);margin:-4px 0 10px}.review-item{padding:11px 0;border-top:1px solid var(--border)}.review-q{font-size:16px;font-weight:900}.review-a{font-size:10px;color:var(--muted);margin-top:3px}.review-empty{text-align:center;color:var(--muted);padding:22px 8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -435,7 +438,7 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
           <span id="h-name">Oyuncu</span>
           <span class="age-tag" id="h-age">?</span>
         </div>
-        <button class="sound-btn" id="sound-btn" onclick="toggleSound()">🔊</button>
+        <button class="sound-btn" id="profile-btn" onclick="openProfile()">👤</button><button class="sound-btn" id="sound-btn" onclick="toggleSound()">🔊</button>
       </div>
     </div>
     <!-- TABS IN HEADER -->
@@ -460,6 +463,11 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
       <div style="padding:4px 0 10px;">
         <div style="font-family:'Fredoka One',cursive;font-size:17px;color:var(--muted);margin-bottom:4px;">Merhaba, <span id="greet-name" style="color:var(--c7);">Oyuncu</span>! 👋</div>
         <div style="font-size:12px;color:var(--muted);font-weight:600;">Hangi modu oynamak istiyorsun?</div>
+      </div>
+      <div class="hero-progress card" onclick="openProfile()">
+        <div class="hp-top"><div><b>🚀 Matematik Serüvenin</b><span id="home-level">Seviye 1</span></div><div class="hp-xp" id="home-xp">0 XP</div></div>
+        <div class="xp-track"><div id="home-xpbar" class="xp-fill" style="width:0%"></div></div>
+        <div class="hp-bottom"><span id="home-stat">Henüz oyun yok</span><span>Profil ›</span></div>
       </div>
       <button class="mbtn bg" onclick="goModes('normal')"><div class="ico">🎯</div><div class="lbl">Klasik Mod<small>Soruyu çöz, puan kazan</small></div><div class="arr">›</div></button>
       <button class="mbtn bb" onclick="goModes('missing')"><div class="ico">🔍</div><div class="lbl">Eksik Sayı<small>Boşluktaki sayıyı bul</small></div><div class="arr">›</div></button>
@@ -487,6 +495,33 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
         <div style="font-family:'Fredoka One',cursive;font-size:17px;color:var(--muted);margin-bottom:4px;">🏆 Skor Tablosu</div>
       </div>
       <div class="card"><div id="score-list"></div></div>
+    </div>
+
+    <!-- SUBPAGE: PROFİL / SERÜVEN -->
+    <div class="subpage" id="p-profile">
+      <button class="back-btn" onclick="closeSub('p-profile')">← Geri</button>
+      <div class="profile-hero card">
+        <div class="avatar" id="prof-avatar">🧠</div>
+        <div class="prof-main"><div class="prof-name" id="prof-name">Oyuncu</div><div class="prof-level" id="prof-level">Seviye 1 • Matematik Kaşifi</div></div>
+        <div class="prof-xp"><b id="prof-xp">0</b><small>XP</small></div>
+      </div>
+      <div class="card">
+        <div class="section-title">🚀 Sonraki Seviye</div>
+        <div class="xp-track big"><div id="prof-xpbar" class="xp-fill" style="width:0%"></div></div>
+        <div class="xp-labels"><span id="prof-xp-now">0 XP</span><span id="prof-xp-next">300 XP</span></div>
+      </div>
+      <div class="pstats">
+        <div class="stat-card"><b id="ps-games">0</b><span>Oyun</span></div><div class="stat-card"><b id="ps-correct">0</b><span>Doğru</span></div><div class="stat-card"><b id="ps-wrong">0</b><span>Yanlış</span></div><div class="stat-card"><b id="ps-streak">0</b><span>En Seri</span></div>
+      </div>
+      <div class="card"><div class="section-title">🏅 Rozetler</div><div class="badges" id="badges"></div></div>
+      <button class="wide-action" onclick="openReview()">📚 Yanlışları Tekrar Et <span id="wrong-count">0</span></button>
+      <button class="wide-action secondary" onclick="resetProgress()">↺ İlerlemeyi Sıfırla</button>
+    </div>
+
+    <!-- SUBPAGE: YANLIŞ SORULAR -->
+    <div class="subpage" id="p-review">
+      <button class="back-btn" onclick="closeSub('p-review')">← Profil</button>
+      <div class="card"><div class="section-title">📚 Tekrar Defterim</div><div class="review-sub">Yanlış yaptığın son sorular burada. Öğren, tekrar dene!</div><div id="review-list"></div></div>
     </div>
 
     <!-- SUBPAGE: MOD SEÇİMİ -->
@@ -642,6 +677,7 @@ let mode='normal',op=1,lastOp=1,diff='easy';
 let score=0,qIdx=0,correct=0,wrong=0,streak=0,bestStreak=0,cval=0;
 let timerInt=null,timeLeft=0,mcqMode=false;
 let scores=JSON.parse(localStorage.getItem('acamay_v6')||'[]');
+let profile=JSON.parse(localStorage.getItem('acamay_profile_v1')||'null')||{xp:0,games:0,totalCorrect:0,totalWrong:0,bestStreak:0,wrongQuestions:[],lastDate:''};;
 let currentTab='math';
 let activeSub=null;
 
@@ -669,7 +705,7 @@ function tone(f,t,d,v,dl){if(!soundOn)return;try{const c=getCtx(),o=c.createOsci
 function playOk(){tone(523,'sine',.07,.15);tone(659,'sine',.07,.12,.1);tone(784,'sine',.12,.12,.2);}
 function playNo(){tone(220,'sawtooth',.12,.15);tone(160,'square',.18,.1,.13);}
 function playWin(){[523,659,784,1047].forEach((f,i)=>tone(f,'sine',.2,.15,i*.1));}
-function toggleSound(){soundOn=!soundOn;document.getElementById('sound-btn').textContent=soundOn?'🔊':'??';}
+function toggleSound(){soundOn=!soundOn;document.getElementById('sound-btn').textContent=soundOn?'🔊':'🔇';}
 
 /* ===== TAB NAVIGATION ===== */
 function switchTab(t){
@@ -811,6 +847,7 @@ function handleR(ok){
     document.getElementById('sfire').textContent='';
     showRw(false,0,0);
   }
+  profile.totalCorrect+=ok?1:0;profile.totalWrong+=ok?0:1;if(!ok){profile.wrongQuestions.push({q:document.getElementById('qdisp').textContent,a:cval,date:new Date().toLocaleDateString('tr-TR')});profile.wrongQuestions=profile.wrongQuestions.slice(-50);}if(bestStreak>profile.bestStreak)profile.bestStreak=bestStreak;saveProfile();
   document.getElementById('gstars').textContent=score;
   setTimeout(nextQ,1400);
 }
@@ -832,8 +869,17 @@ function finishGame(){
   document.getElementById('remi').textContent=emoji;
   document.getElementById('rgrade').textContent=grade;
   if(correct===10){const pb=document.getElementById('pfbanner');pb.classList.add('show');setTimeout(()=>pb.classList.remove('show'),3500);}
-  playWin();confetti();saveScore();openSub('p-result');
+  profile.games++;profile.xp+=score+correct*2;saveProfile();playWin();confetti();saveScore();openSub('p-result');
 }
+function saveProfile(){localStorage.setItem('acamay_profile_v1',JSON.stringify(profile));updateProfileUI();}
+function levelInfo(){const lvl=Math.floor(profile.xp/300)+1;const base=(lvl-1)*300;return {lvl,base,next:lvl*300,pct:Math.min(100,Math.round((profile.xp-base)/300*100))};}
+function updateProfileUI(){const li=levelInfo();const n=userName||'Oyuncu';const el=id=>document.getElementById(id);if(el('home-level'))el('home-level').textContent='Seviye '+li.lvl;if(el('home-xp'))el('home-xp').textContent=profile.xp+' XP';if(el('home-xpbar'))el('home-xpbar').style.width=li.pct+'%';if(el('home-stat'))el('home-stat').textContent=profile.games?profile.totalCorrect+' doğru • '+profile.games+' oyun':'İlk görevine başla!';if(el('prof-name'))el('prof-name').textContent=n;if(el('prof-level'))el('prof-level').textContent='Seviye '+li.lvl+' • '+(li.lvl>=10?'Matematik Ustası':li.lvl>=5?'Zeka Kâşifi':'Matematik Kaşifi');if(el('prof-xp'))el('prof-xp').textContent=profile.xp;if(el('prof-xpbar'))el('prof-xpbar').style.width=li.pct+'%';if(el('prof-xp-now'))el('prof-xp-now').textContent=profile.xp+' XP';if(el('prof-xp-next'))el('prof-xp-next').textContent=li.next+' XP';if(el('ps-games'))el('ps-games').textContent=profile.games;if(el('ps-correct'))el('ps-correct').textContent=profile.totalCorrect;if(el('ps-wrong'))el('ps-wrong').textContent=profile.totalWrong;if(el('ps-streak'))el('ps-streak').textContent=profile.bestStreak;if(el('wrong-count'))el('wrong-count').textContent=profile.wrongQuestions.length;renderBadges();}
+function renderBadges(){const list=[['🌱','İlk Adım',profile.games>=1],['🎯','10 Doğru',profile.totalCorrect>=10],['🔥','Seri Ustası',profile.bestStreak>=5],['🏆','Şampiyon',profile.totalCorrect>=50],['💎','100 XP',profile.xp>=100],['🚀','500 XP',profile.xp>=500],['🧠','100 Doğru',profile.totalCorrect>=100],['👑','Seviye 10',levelInfo().lvl>=10]];const b=document.getElementById('badges');if(b)b.innerHTML=list.map(x=>`<div class="badge ${x[2]?'on':''}"><span class="be">${x[0]}</span><span class="bn">${x[1]}</span></div>`).join('');}
+function openProfile(){closeGame();openSub('p-profile');updateProfileUI();}
+function openReview(){openSub('p-review');const el=document.getElementById('review-list');const a=profile.wrongQuestions;if(!a.length){el.innerHTML='<div class="review-empty">🎉 Henüz yanlış soru yok. Harika gidiyorsun!</div>';return;}el.innerHTML=a.slice().reverse().slice(0,30).map((x,i)=>`<div class="review-item"><div class="review-q">${escapeHtml(x.q)}</div><div class="review-a">Doğru cevap: <b>${escapeHtml(String(x.a))}</b> • ${x.date}</div></div>`).join('');}
+function escapeHtml(v){return String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
+function resetProgress(){if(!confirm('İlerleme, XP ve tekrar defteri sıfırlansın mı?'))return;profile={xp:0,games:0,totalCorrect:0,totalWrong:0,bestStreak:0,wrongQuestions:[],lastDate:''};saveProfile();closeSub('p-profile');}
+
 function saveScore(){
   scores.push({name:userName,age:userAge,score,correct,date:Date.now()});
   scores.sort((a,b)=>b.score-a.score);scores=scores.slice(0,10);
@@ -909,6 +955,7 @@ window.onload=()=>{
   const ag=localStorage.getItem('acamay_age');
   if(nm){document.getElementById('wname').value=nm;}
   if(ag){document.getElementById('wage').value=ag;}
+  updateProfileUI();
 };
 </script>
 
