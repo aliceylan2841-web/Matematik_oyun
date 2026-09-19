@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7424527817059865" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
   
   
@@ -58,13 +59,21 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
 
 /* ===== SCREEN SYSTEM ===== */
 .screen{
-  position:absolute;inset:0;
+  position:absolute;top:50px;bottom:50px;left:0;right:0;
   display:flex;flex-direction:column;
   opacity:0;pointer-events:none;
   transition:opacity .3s,transform .3s;
   transform:translateY(12px);
   z-index:1;
 }
+#ad-top,#ad-bottom{
+  position:fixed;left:0;right:0;height:50px;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--card,#1b1a22);color:var(--muted,#999);
+  font-size:10px;font-family:'Nunito',sans-serif;overflow:hidden;
+}
+#ad-top{top:0;border-bottom:1px solid rgba(255,255,255,.08);}
+#ad-bottom{bottom:0;border-top:1px solid rgba(255,255,255,.08);}
 .screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
 
 /* ===== WELCOME SCREEN ===== */
@@ -383,6 +392,15 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
 </style>
 </head>
 <body>
+<!-- ===== ÜST REKLAM ALANI =====
+     Buraya reklam ağınızdan aldığınız kodu (script/ins etiketi) yapıştırın.
+     Örnek (AdSense): ins class="adsbygoogle" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX"
+-->
+<div id="ad-top">Reklam Alanı (Üst)</div>
+
+<!-- ===== ALT REKLAM ALANI ===== -->
+<div id="ad-bottom">Reklam Alanı (Alt)</div>
+
 <canvas id="cc"></canvas>
 
 <!-- REWARD POP -->
