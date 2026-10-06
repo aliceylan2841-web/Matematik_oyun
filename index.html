@@ -59,20 +59,22 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
 
 /* ===== SCREEN SYSTEM ===== */
 .screen{
-  position:absolute;top:0;bottom:50px;left:0;right:0;
+  position:absolute;top:var(--ad-top,50px);bottom:var(--ad-bot,60px);left:0;right:0;
   display:flex;flex-direction:column;
   opacity:0;pointer-events:none;
   transition:opacity .3s,transform .3s;
   transform:translateY(12px);
   z-index:1;
 }
-#ad-bottom{
-  position:fixed;left:0;right:0;height:50px;z-index:9999;
+#ad-top,#ad-bottom{
+  position:fixed;left:0;right:0;z-index:9999;
   display:flex;align-items:center;justify-content:center;
   background:var(--card,#1b1a22);color:var(--muted,#999);
   font-size:10px;font-family:'Nunito',sans-serif;overflow:hidden;
 }
-#ad-bottom{bottom:0;border-top:1px solid rgba(255,255,255,.08);}
+#ad-top{top:0;height:var(--ad-top,50px);border-bottom:1px solid rgba(255,255,255,.08);}
+#ad-bottom{bottom:0;height:var(--ad-bot,60px);border-top:1px solid rgba(255,255,255,.08);}
+#ad-top iframe,#ad-bottom iframe{transform-origin:center center;flex-shrink:0;}
 .screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
 
 /* ===== WELCOME SCREEN ===== */
@@ -308,7 +310,7 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
 
 /* PERFECT BANNER */
 .pfbanner{
-  position:fixed;top:0;left:0;right:0;z-index:700;
+  position:fixed;top:var(--ad-top,50px);left:0;right:0;z-index:700;
   background:linear-gradient(135deg,#6C5CE7,#00CEC9);
   padding:12px;text-align:center;
   font-family:'Fredoka One',cursive;font-size:17px;color:white;
@@ -391,7 +393,9 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
 </style>
 </head>
 <body>
-<!-- ===== ALT REKLAM (Adsterra 320x50) ===== -->
+<!-- ===== ÜST REKLAM (320x50) ===== -->
+<div id="ad-top"></div>
+<!-- ===== ALT REKLAM (320x50, biraz büyütülmüş) ===== -->
 <div id="ad-bottom"></div>
 
 <canvas id="cc"></canvas>
@@ -486,7 +490,6 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
       <button class="mbtn bb" onclick="goModes('missing')"><div class="ico">🔍</div><div class="lbl" data-i18n="modeMissing">Eksik Sayı<small>Boşluktaki sayıyı bul</small></div><div class="arr">›</div></button>
       <button class="mbtn bo" onclick="goModes('word')"><div class="ico">📖</div><div class="lbl" data-i18n="modeWord">Kelime Problemi<small>Hikâyeli matematik</small></div><div class="arr">›</div></button>
       <button class="mbtn bp" onclick="goModes('mcq')"><div class="ico">🎲</div><div class="lbl" data-i18n="modeMcq">Çoktan Seçmeli<small>4 şıktan doğruyu seç</small></div><div class="arr">›</div></button>
-      <div id="ad-native" style="margin:14px 0;"></div>
     </div>
 
     <!-- TAB: OYUNLAR -->
@@ -509,7 +512,6 @@ canvas#cc{position:fixed;inset:0;pointer-events:none;z-index:999;display:none;}
         <div style="font-family:'Fredoka One',cursive;font-size:17px;color:var(--muted);margin-bottom:4px;" data-i18n="scoreTableTitle">🏆 Skor Tablosu</div>
       </div>
       <div class="card"><div id="score-list"></div></div>
-      <div id="ad-rect" style="display:flex;justify-content:center;margin:14px 0;min-height:250px;"></div>
     </div>
 
     <!-- SUBPAGE: PROFİL / SERÜVEN -->
@@ -1124,29 +1126,29 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 /* ===== ADSTERRA REKLAMLARI =====
-   320x50 (alt bar) · 300x250 (Skorlar sekmesi) · Yerel Afiş (Matematik sekmesi altı) */
+   Üst bar (320x50) · Alt bar (320x50, ölçeklenmiş = biraz büyük) */
 (function(){
-  function iframeAd(box,key,w,h){
+  var KEY_BANNER='f5beb136d91cf9c9a70da51901681776'; // 320x50
+  function iframeAd(box,key,w,h,scale){
     if(!box) return;
     var f=document.createElement('iframe');
-    f.width=w; f.height=h; f.style.cssText='border:0;overflow:hidden;max-width:100%;';
+    f.width=w; f.height=h; f.style.cssText='border:0;overflow:hidden;max-width:none;';
+    if(scale&&scale!==1) f.style.transform='scale('+scale+')';
     f.setAttribute('scrolling','no'); f.setAttribute('frameborder','0');
     f.srcdoc='<!DOCTYPE html><html><body style="margin:0;background:transparent">'+
       '<scr'+'ipt>atOptions={"key":"'+key+'","format":"iframe","height":'+h+',"width":'+w+',"params":{}};</scr'+'ipt>'+
       '<scr'+'ipt src="https://bauval.org/22/'+key+'"></scr'+'ipt></body></html>';
     box.appendChild(f);
   }
-  function nativeAd(box,id,src){
-    if(!box) return;
-    var sc=document.createElement('script');
-    sc.async=true; sc.setAttribute('data-cfasync','false'); sc.src=src;
-    var c=document.createElement('div'); c.id='container-'+id;
-    box.appendChild(sc); box.appendChild(c);
-  }
   function init(){
-    iframeAd(document.getElementById('ad-bottom'),'f5beb136d91cf9c9a70da51901681776',320,50);
-    iframeAd(document.getElementById('ad-rect'),'e4130cf8e7bde60b77a048b5213170ff',300,250);
-    nativeAd(document.getElementById('ad-native'),'1221fdb4c3c37ec3ed4fbdd33e70a0af','https://bauval.org/21/1221fdb4c3c37ec3ed4fbdd33e70a0af');
+    var root=document.documentElement.style;
+    // alt reklam: ekrana sığacak kadar (en fazla 1.25x) büyütülür
+    var sBot=Math.max(1,Math.min(1.25,(window.innerWidth-8)/320));
+    var hBot=Math.round(50*sBot)+6;
+    root.setProperty('--ad-top','50px');
+    root.setProperty('--ad-bot',hBot+'px');
+    iframeAd(document.getElementById('ad-top'),KEY_BANNER,320,50,1);
+    iframeAd(document.getElementById('ad-bottom'),KEY_BANNER,320,50,sBot);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
